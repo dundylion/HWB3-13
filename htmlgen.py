@@ -1,58 +1,3 @@
-def print_tag(obj, indentlevel=0, indent='  '):
-    result = []
-    line = ''
-
-    # Тут проведём некоторые проверки для внутреннего использования
-    # И удобного чтения кода
-    # Проверяем наличие вложенных тегов. Если их нет, то
-    # тег займёт всего одну строку вместе с закрывающим
-    # Учтём это в дальнейшем
-    is_multiline = True if obj.children else False
-
-    # Так же сразу проверим, есть ли закрывающий тег
-    # Изначально считая, что есть
-    is_single = False
-    if hasattr(obj, 'is_single'):
-        if obj.is_single:
-            is_single = True
-
-    # Теперь проверяем пришедшие атрибуты, формируем из них строку
-    attrib_line = ''
-    if hasattr(obj, 'attributes'):
-        if 'cls' in obj.attributes:
-            # У нас есть кортеж с классами, немного преобразим их в словаре
-            classes = " ".join(list(obj.attributes['cls']))
-            obj.attributes['class'] = classes
-            del obj.attributes['cls']
-
-        for atr in obj.attributes:
-            attrib_line += ' '+atr+'=\"'+obj.attributes[atr]+'\"'
-    # Продолжаем формировать строку
-    line += indent*indentlevel + '<' + obj.tag_name.upper() + attrib_line +'>'
-
-    if hasattr(obj, 'text'):
-        line += obj.text
-
-    if not is_single and not is_multiline:
-        line += '</'+ obj.tag_name.upper()+'>'
-    result.append(line)
-
-    # Здесь, если нужно, рекурсивно уходим во вложенные теги
-    # И отступ тоже прибавляем
-    # Результат возвращаем в список, который копит результат
-
-    for child in obj.children:
-        result.append(print_tag(child, indentlevel=indentlevel+1))
-  
-    # Закрываем многострочный тег (если он такой)
-    if is_multiline:
-        result.append(indent*indentlevel + '</' + obj.tag_name.upper() + '>')
-    # Собираем в итоге большой кусок текста из списка строк
-    # через джоин по символу переноса строки
-    # и отдаём
-    return '\n'.join(result)
-
-
 class Htmlgen:
     #Это "родительский" класс для остальных трёх.
     #В нём общие для всех свойства и методы
@@ -137,3 +82,58 @@ class Tag(Htmlgen):
         line1 = 'Tag object \"' + self.tag_name +'\" with '\
         +str(len(self.children))+' children tags'
         return  line1
+
+def print_tag(obj, indentlevel=0, indent='  '):
+    result = []
+    line = ''
+
+    # Тут проведём некоторые проверки для внутреннего использования
+    # И удобного чтения кода
+    # Проверяем наличие вложенных тегов. Если их нет, то
+    # тег займёт всего одну строку вместе с закрывающим
+    # Учтём это в дальнейшем
+    is_multiline = True if obj.children else False
+
+    # Так же сразу проверим, есть ли закрывающий тег
+    # Изначально считая, что есть
+    is_single = False
+    if hasattr(obj, 'is_single'):
+        if obj.is_single:
+            is_single = True
+
+    # Теперь проверяем пришедшие атрибуты, формируем из них строку
+    attrib_line = ''
+    if hasattr(obj, 'attributes'):
+        if 'cls' in obj.attributes:
+            # У нас есть кортеж с классами, немного преобразим их в словаре
+            classes = " ".join(list(obj.attributes['cls']))
+            obj.attributes['class'] = classes
+            del obj.attributes['cls']
+
+        for atr in obj.attributes:
+            attrib_line += ' '+atr+'=\"'+obj.attributes[atr]+'\"'
+    # Продолжаем формировать строку
+    line += indent*indentlevel + '<' + obj.tag_name.upper() + attrib_line +'>'
+
+    if hasattr(obj, 'text'):
+        line += obj.text
+
+    if not is_single and not is_multiline:
+        line += '</'+ obj.tag_name.upper()+'>'
+    result.append(line)
+
+    # Здесь, если нужно, рекурсивно уходим во вложенные теги
+    # И отступ тоже прибавляем
+    # Результат возвращаем в список, который копит результат
+
+    for child in obj.children:
+        result.append(print_tag(child, indentlevel=indentlevel+1))
+  
+    # Закрываем многострочный тег (если он такой)
+    if is_multiline:
+        result.append(indent*indentlevel + '</' + obj.tag_name.upper() + '>')
+    # Собираем в итоге большой кусок текста из списка строк
+    # через джоин по символу переноса строки
+    # и отдаём
+    return '\n'.join(result)
+
