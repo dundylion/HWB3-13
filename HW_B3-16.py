@@ -20,6 +20,6 @@ if __name__ == "__main__":
     h1.text = 'Test'
     div = body.add_tag('div', cls=("container", "container-fluid"), id="lead")
     paragraph = div.add_tag('p', text='Another test')
-    img = div.add_tag('img', is_single=True, src='/icon.png')
+    img = div.add_tag('img', is_single=True, src='/icon.png', data_image="responsive")
 
     html.output_default()
