@@ -12,7 +12,7 @@ if __name__ == "__main__":
     # Классы и функционал вынесены в модуль htmlgen
     # Там же в коде и остальные коментарии
 
-    html = HTML(output_file="index.html")
+    html = HTML() #пишем сюда output_file="index.html" например, для вывода в файл
     head = html.add_toplevel_tag('head')
     title = head.add_tag('title', text="Hello")
     body = html.add_toplevel_tag('body')
